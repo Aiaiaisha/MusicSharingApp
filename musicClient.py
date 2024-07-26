@@ -3,6 +3,11 @@ from threading import Thread
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
+from playsound import playsound
+import pygame
+from pygame import mixer
+import os
+import time
 
 PORT = 8050
 IP_ADD = "127.0.0.1"
@@ -17,6 +22,48 @@ stopButton = None
 uploadButton = None
 downloadButton = None
 infoLabel = None
+song_counter = 0
+song_selected = None
+
+def pause():
+    global song_selected
+
+    pygame
+    mixer.init()
+    mixer.music.load("shared_files/"+song_selected)
+    mixer.music.pause()
+
+
+def resume():
+    global song_selected
+
+    pygame
+    mixer.init()
+    mixer.music.load("shared_files/"+song_selected)
+    mixer.music.play()
+
+
+def play():
+    global song_selected
+    song_selected = listBox.get(ANCHOR)
+
+    pygame
+    mixer.init()
+    mixer.music.load("shared_files/"+song_selected)
+    mixer.music.play()
+    if song_selected != "":
+        infoLabel.configure(text="Now Playing "+song_selected)
+    else:
+        infoLabel.configure(text = "")
+
+def stop():
+    global song_selected
+
+    pygame
+    mixer.init()
+    mixer.song.load("shared_files/"song_selected)
+    mixer.song.pause()
+    infoLabel.configure(text="")
 
 def musicWindow():
     global window
@@ -43,10 +90,10 @@ def musicWindow():
     scrollbar.place (relheight= 1,relx=1)
     scrollbar.config(command = listBox.yview)
 
-    PlayButton=Button(window, text="Play", width=10,bd=1,bg="SkyBlue", font=("Calibri",10))
+    PlayButton=Button(window, text="Play", width=10,bd=1,bg="SkyBlue", font=("Calibri",10),command=play)
     PlayButton.place(x=30,y=200)
 
-    stopButton = Button(window, text="stop",bd=1,width=10,bg="SkyBlue", font = ("Calibri",10)) 
+    stopButton = Button(window, text="stop",bd=1,width=10,bg="SkyBlue", font = ("Calibri",10),command =stop) 
     stopButton.place (x=200,y=200)
 
     uploadButton=Button (window, text="Upload",width=10,bd=1,bg='SkyBlue', font=("Calibri",10))
@@ -54,6 +101,12 @@ def musicWindow():
 
     downloadButton =Button (window, text="Download", width=10,bd=1,bg="SkyBlue", font = ("Calibri",10)) 
     downloadButton.place (x=200,y=250)
+
+    resumeButton = Button(window,text="Resume",width=10,bd=1,bg = "SkyBlue",font=("Calibri",10),command = resume)
+    resumeButton.place(x=30,y=250)
+
+    pauseButton = Button(window,text="Pause",width=10,bd=1,bg = "SkyBlue",font=("Calibri",10),command=pause)
+    pauseButton.place(x=200,y=250)
     
     infoLabel= Label(window, text="",fg= "blue", font=("Calibri",8))
     infoLabel.place (x=4, y=280)
@@ -75,5 +128,9 @@ def setup():
 setup()
 
 
+for file in os.listdir("shared_files"):
+    filename = os.fsdecode(file)
+    listBox.insert(song_counter,filename)
+    song_counter+=1
 
 
